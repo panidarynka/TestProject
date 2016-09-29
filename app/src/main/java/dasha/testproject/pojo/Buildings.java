@@ -1,11 +1,9 @@
 
 package dasha.testproject.pojo;
 
-import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-@Generated("org.jsonschema2pojo")
 public class Buildings {
 
     @SerializedName("data")

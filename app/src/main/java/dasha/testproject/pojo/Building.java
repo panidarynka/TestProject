@@ -1,11 +1,9 @@
 
 package dasha.testproject.pojo;
 
-import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-@Generated("org.jsonschema2pojo")
 public class Building {
 
     @SerializedName("id")
@@ -26,9 +24,6 @@ public class Building {
     @SerializedName("sale")
     @Expose
     private String sale;
-    @SerializedName("coordinate")
-    @Expose
-    private Coordinate coordinate;
     @SerializedName("min_rent")
     @Expose
     private String minRent;
@@ -142,24 +137,6 @@ public class Building {
      */
     public void setSale(String sale) {
         this.sale = sale;
-    }
-
-    /**
-     * 
-     * @return
-     *     The coordinate
-     */
-    public Coordinate getCoordinate() {
-        return coordinate;
-    }
-
-    /**
-     * 
-     * @param coordinate
-     *     The coordinate
-     */
-    public void setCoordinate(Coordinate coordinate) {
-        this.coordinate = coordinate;
     }
 
     /**

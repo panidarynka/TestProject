@@ -36,7 +36,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Buildi
 
     @Override
     public void onBindViewHolder(BuildingViewHolder holder, int position) {
-        Picasso.with(mContext).load(mContext.getString(R.string.URL)+buildingList.get(position).getImage()).into(holder.imageView);
+        Picasso.with(mContext).load(mContext.getString(R.string.URL) + buildingList.get(position).getImage()).into(holder.imageView);
         holder.textViewTitle.setText(buildingList.get(position).getTitle());
         holder.textViewAddress.setText(buildingList.get(position).getAddress());
 

@@ -10,20 +10,18 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.facebook.AccessToken;
+import java.util.List;
 
+import dasha.testproject.pojo.Building;
 import dasha.testproject.pojo.Buildings;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 public class MainActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     RecyclerAdapter mRecyclerAdapter;
+    List<Building> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,48 +38,43 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         TextView nameUser = (TextView) findViewById(R.id.profile_text_view);
         nameUser.setText(name + ", " + email);
-        NetworkOperation networkOperation = new NetworkOperation();
-        networkOperation.network();
-        mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        network();
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(MainActivity.this, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(MainActivity.this, "on clicked "+position, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(MainActivity.this, mList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+//                        Log.d("id", mList.get(position).getId().toString());
+                        intent.putExtra("id", mList.get(position).getId());
+                        startActivity(intent);
                     }
                 })
         );
-
     }
 
+    private void network() {
 
-    private class NetworkOperation {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.URL))
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        GitHubService gitHubService = retrofit.create(GitHubService.class);
+        GitHubService gitHubService = GitHubService.retrofit.create(GitHubService.class);
 
-        private void network() {
+        Call<Buildings> call = gitHubService.repoHouses();
+        call.enqueue(new Callback<Buildings>() {
+            @Override
+            public void onResponse(Call<Buildings> call, Response<Buildings> response) {
+                mList = response.body().getData().getBuildings();
+                mRecyclerAdapter = new RecyclerAdapter(mList, MainActivity.this);
+                mRecyclerView.setAdapter(mRecyclerAdapter);
+            }
 
-            Call<Buildings> call = gitHubService.repoHouses();
-            call.enqueue(new Callback<Buildings>() {
-                @Override
-                public void onResponse(Call<Buildings> call, Response<Buildings> response) {
-                    mRecyclerAdapter = new RecyclerAdapter(response.body().getData().getBuildings(), MainActivity.this);
-                    mRecyclerView.setAdapter(mRecyclerAdapter);
+            @Override
+            public void onFailure(Call<Buildings> call, Throwable t) {
+                Log.e("response failed", t.getMessage());
 
-                }
-
-                @Override
-                public void onFailure(Call<Buildings> call, Throwable t) {
-                    Log.e("response failed", t.getMessage());
-
-                }
-            });
-        }
+            }
+        });
     }
-
 }
+
